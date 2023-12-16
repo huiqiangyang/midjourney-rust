@@ -6,7 +6,7 @@
 RUST_APP_NAME="midjourney-rust"
 RUN_DIR="./run"
 RELEASE_DIR="./release"
-TARGET_DIR="./target/release"
+TARGET_DIR="./target/x86_64-unknown-linux-musl/release"
 LOG_FILE="$RUN_DIR/midjourney-rust.log"
 
 # 创建目录（如果不存在）
@@ -33,7 +33,7 @@ stop_application() {
 # 构建应用程序
 build() {
     echo "Building the Rust project..."
-    cargo build --release
+    cargo build --release --target x86_64-unknown-linux-musl
 
     # 复制可执行文件到 release 目录下
     [ -f "$TARGET_DIR/$RUST_APP_NAME" ] && cp "$TARGET_DIR/$RUST_APP_NAME" "$RELEASE_DIR/" || echo "Error: Executable file not found. Build may have failed."
