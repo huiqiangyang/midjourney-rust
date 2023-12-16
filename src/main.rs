@@ -1,9 +1,13 @@
 use std::thread;
 use std::time::Duration;
 
+use log::{error, info};
 use zmq::Context;
 
 fn main() {
+    // 初始化 log4rs
+    log4rs::init_file("./log4rs.yaml", Default::default()).expect("failed to initialize log4rs");
+
     let context = Context::new();
 
     // First, connect our subscriber
@@ -19,10 +23,19 @@ fn main() {
 
     // Third, get our updates and report how many we got
     loop {
-        let message = subscriber
-            .recv_string(0)
-            .expect("failed receiving update")
-            .unwrap();
-        println!("Received {} updates", message);
+        match subscriber.recv_string(0) {
+            Ok(Ok(message)) => {
+                // 使用 info! 宏记录日志
+                info!("Received {} updates", message);
+            }
+            Ok(Err(e)) => {
+                // 使用 error! 宏记录错误日志
+                error!("Failed to decode message: {:?}", e);
+            }
+            Err(e) => {
+                // 使用 error! 宏记录错误日志
+                error!("Failed to receive message: {}", e);
+            }
+        }
     }
 }

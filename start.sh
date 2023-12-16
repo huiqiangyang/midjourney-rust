@@ -1,19 +1,22 @@
 #!/bin/bash
 
+# 脚本用途：管理 Rust 应用程序的启动和停止
+
 # 设置常量
 RUST_APP_NAME="midjourney-rust"
+RUN_DIR="./run"
+TARGET_DIR="./target/release"
+LOG_FILE="$RUN_DIR/midjourney-rust.log"
 
 # 创建 run 目录（如果不存在）
 create_run_directory() {
-    RUN_DIR="$SCRIPT_DIR/run"
     [ ! -d "$RUN_DIR" ] && mkdir "$RUN_DIR"
 }
 
 # 启动应用程序
 start_application() {
-  stop_application
     echo "Starting the application..."
-    ./target/release/$RUST_APP_NAME
+    $RUN_DIR/$RUST_APP_NAME > "$LOG_FILE" 2>&1 &
 }
 
 # 关闭应用程序
@@ -25,17 +28,27 @@ stop_application() {
 # 构建并启动应用程序
 build_and_start() {
     echo "Updating the project from Git..."
-    git pull origin main
+    git pull origin master
     echo "Building the Rust project..."
     cargo build --release
-    start_application
+
+    # 移动可执行文件到 run 目录下
+    if [ -f "$TARGET_DIR/$RUST_APP_NAME" ]; then
+        create_run_directory
+        mv "$TARGET_DIR/$RUST_APP_NAME" "$RUN_DIR/"
+        # 启动应用程序
+        start_application
+    else
+        echo "Error: Executable file not found. Build may have failed."
+    fi
 }
 
 # 根据传入的参数执行相应的操作
 case "$1" in
-    "start") create_run_directory && start_application ;;
+    "start") create_run_directory && build_and_start ;;
     "stop") stop_application ;;
-    "build_and_start") create_run_directory && build_and_start ;;
+    "build_and_start") build_and_start ;;
+    *) echo "Usage: $0 {start|stop|build_and_start}" && exit 1 ;;
 esac
 
 echo "Done."
