@@ -10,5 +10,3 @@ edition = "2021"
 zmq = "0.10.0"
 log4rs = "0.12"
 log = "0.4.20"
-
-autocfg = { version = "*", package = "autocfg", optional = true }

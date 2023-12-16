@@ -1,2 +1,3 @@
 chmod +x start.sh
-./start.sh build_and_start
+./start.sh build
+./start.sh start
