@@ -3,7 +3,7 @@
 appenders:
   file:
     kind: file
-    path: "logs/app.log"
+    path: "run/app.log"
     encoder:
       pattern: "{d(%Y-%m-%d %H:%M:%S)} - {m}{n}"
 
