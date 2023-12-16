@@ -19,7 +19,7 @@ fn main() {
     // Set a subscription filter (empty string means subscribe to all messages)
     subscriber.set_subscribe(b"").expect("failed setting subscription");
 
-    thread::sleep(Duration::from_millis(1000));
+    thread::sleep(Duration::from_millis(10));
 
     // Third, get our updates and report how many we got
     loop {

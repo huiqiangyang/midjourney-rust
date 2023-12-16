@@ -17,6 +17,7 @@ create_directory() {
 # 启动应用程序
 start_application() {
     create_directory "$RUN_DIR"
+    cp "$RELEASE_DIR/$RUST_APP_NAME" "$RUN_DIR/"
     echo "Starting the application..."
     $RUN_DIR/$RUST_APP_NAME > "$LOG_FILE" 2>&1 &
 }
