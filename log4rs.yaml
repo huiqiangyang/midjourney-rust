@@ -1,6 +1,10 @@
 # log4rs.yaml
 
 appenders:
+  stdout:
+    kind: console
+    encoder:
+      pattern: "{d(%Y-%m-%d %H:%M:%S)} - {m}{n}"
   file:
     kind: file
     path: "run/app.log"
@@ -11,3 +15,4 @@ root:
   level: info
   appenders:
     - file
+    - stdout

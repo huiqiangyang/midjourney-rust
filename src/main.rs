@@ -15,7 +15,7 @@ fn main() {
     subscriber
         .connect("tcp://localhost:5555")
         .expect("failed connecting subscriber");
-
+    info!("Connected subscriber");
     // Set a subscription filter (empty string means subscribe to all messages)
     subscriber.set_subscribe(b"").expect("failed setting subscription");
 
