@@ -16,13 +16,16 @@ create_directory() {
 
 # 启动应用程序
 start_application() {
+    echo "Start pulling the latest code..."
+    git pull origin master
+
     stop_application
     # 先删除目录，再创建目录
     rm -rf "$RUN_DIR"
     create_directory "$RUN_DIR"
-    echo "Start pulling the latest code..."
-    git pull origin master
+
     cp "$RELEASE_DIR/$RUST_APP_NAME" "$RUN_DIR/"
+
     echo "Starting the application..."
     $RUN_DIR/$RUST_APP_NAME > "$LOG_FILE" 2>&1 &
 }
