@@ -1,13 +1,13 @@
-# log4rs.yaml
-
 appenders:
   stdout:
     kind: console
     encoder:
       pattern: "{d(%Y-%m-%d %H:%M:%S)} - {m}{n}"
   file:
-    kind: file
-    path: "run/app.log"
+    kind: rolling_file
+    append: true
+    max_files: 3  # 保留的最大文件数，根据需要调整
+    pattern: "run/app-{d(%Y-%m-%d)}.log"
     encoder:
       pattern: "{d(%Y-%m-%d %H:%M:%S)} - {m}{n}"
 
