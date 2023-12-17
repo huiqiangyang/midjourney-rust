@@ -13,7 +13,7 @@ fn main() {
     // First, connect our subscriber
     let subscriber = context.socket(zmq::SUB).expect("failed creating socket");
     subscriber
-        .connect("tcp://localhost:5555")
+        .connect("tcp://107.172.190.71:5555")
         .expect("failed connecting subscriber");
     info!("Connected subscriber");
     // Set a subscription filter (empty string means subscribe to all messages)
@@ -26,7 +26,7 @@ fn main() {
         match subscriber.recv_string(0) {
             Ok(Ok(message)) => {
                 // 使用 info! 宏记录日志
-                info!("Received {} updates", message);
+                info!("Received {}", message);
             }
             Ok(Err(e)) => {
                 // 使用 error! 宏记录错误日志
