@@ -1,41 +1,27 @@
-use std::thread;
-use std::time::Duration;
+use std::sync::Arc;
 
-use log::{error, info};
-use zmq::Context;
+use polodb_core::Database;
 
-fn main() {
+use crate::discord::discord;
+
+mod discord;
+mod web;
+mod message;
+
+#[tokio::main]
+async fn main() {
+    // 读取数据库
+    let db = Arc::new(Database::open_file("db/midjourney").unwrap());
+
     // 初始化 log4rs
     log4rs::init_file("./log4rs.yaml", Default::default()).expect("failed to initialize log4rs");
 
-    let context = Context::new();
+    let db_clone = Arc::clone(&db);
+    tokio::spawn(async move {
+        discord(&db_clone);
+    });
 
-    // First, connect our subscriber
-    let subscriber = context.socket(zmq::SUB).expect("failed creating socket");
-    subscriber
-        .connect("tcp://107.172.190.71:5555")
-        .expect("failed connecting subscriber");
-    info!("Connected subscriber");
-    // Set a subscription filter (empty string means subscribe to all messages)
-    subscriber.set_subscribe(b"").expect("failed setting subscription");
-
-    thread::sleep(Duration::from_millis(10));
-
-    // Third, get our updates and report how many we got
-    loop {
-        match subscriber.recv_string(0) {
-            Ok(Ok(message)) => {
-                // 使用 info! 宏记录日志
-                info!("Received {}", message);
-            }
-            Ok(Err(e)) => {
-                // 使用 error! 宏记录错误日志
-                error!("Failed to decode message: {:?}", e);
-            }
-            Err(e) => {
-                // 使用 error! 宏记录错误日志
-                error!("Failed to receive message: {}", e);
-            }
-        }
-    }
+    rouille::start_server("127.0.0.1:8000", move |request| {
+        web::handle_request(&db, request)
+    });
 }

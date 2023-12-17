@@ -4,9 +4,8 @@ appenders:
     encoder:
       pattern: "{d(%Y-%m-%d %H:%M:%S)} - {m}{n}"
   file:
-    kind: rolling_file
-    append: true
-    pattern: "run/app-{d(%Y-%m-%d)}.log"
+    kind: file
+    path: "run/app.log"
     encoder:
       pattern: "{d(%Y-%m-%d %H:%M:%S)} - {m}{n}"
 
